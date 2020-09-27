@@ -40,6 +40,7 @@ class superplugin {
 			}),
 			new ZLibrary.Settings.Textbox("rozdzielac", "opis", this.settings.rozdzielacz, (e)=>{
 				//window.BdApi.alert("aaaa")
+				if(e == "" || e == " ")return
 				this.settings.rozdzielacz = e
 				this.saveSettings();
 			})
@@ -61,7 +62,7 @@ class superplugin {
     start() {
         if (!global.ZeresPluginLibrary) return window.BdApi.alert("Library Missing",`The library plugin needed for ${this.getName()} is missing.<br /><br /> <a href="https://betterdiscord.net/ghdl?url=https://raw.githubusercontent.com/rauenzi/BDPluginLibrary/master/release/0PluginLibrary.plugin.js" target="_blank">Click here to download the library!</a>`);
 		if (global.ZeresPluginLibrary) this.initialize();
-		ZLibrary.PluginUpdater.checkForUpdate(this.getName(), this.getVersion(), "LINK_TO_RAW_CODE");
+		ZLibrary.PluginUpdater.checkForUpdate(this.getName(), this.getVersion(), "https://raw.githubusercontent.com/pietruszka123/plugin-discord/master/superplugin.plugin.js");
 		this.cancelPatch = BdApi.monkeyPatch(BdApi.findModuleByProps("dispatch"), 'dispatch', { after: this.dispatch.bind(this) });
 
     }
@@ -102,7 +103,7 @@ class superplugin {
 						if(!this.settings.raw){
 						if(chatboxValue[i] == " "){wynik += " "}
 						else{
-							wynik +=chatboxValue[i].charCodeAt(0).toString(this.settings.liczby)+"Q"
+							wynik +=chatboxValue[i].charCodeAt(0).toString(this.settings.liczby)+this.settings.rozdzielacz
 						}
 					}else{
 						wynik +=chatboxValue[i].charCodeAt(0).toString(this.settings.liczby) + " "
