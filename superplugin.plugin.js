@@ -5,7 +5,7 @@ const { get } = require("request");
 class superplugin {
     getName() {return "super plugin";}
     getDescription() {return "?";}
-    getVersion() {return "0.0.3";}
+    getVersion() {return "0.0.4";}
     getAuthor() {return "pietruszka123";}
 	getSettingsPanel(){
 		let panel = $(`<form class="form" style="width:100%;"></form>`)[0];
@@ -188,8 +188,9 @@ class superplugin {
 		}
 		//if(message.length){
 			var array = message.content
+			console.log(this.settings.slowo.includes(array) + " cooooo")
+			if(!this.settings.slowo.includes(...array)){return}
 			var kod = ""
-			var spos = []
 			//array = array.split(" ")
 			console.log(array)
 			for (let i = 0; i < array.length; i++) {
@@ -208,6 +209,7 @@ class superplugin {
 			console.log(kod)		
 				var kk = kod[0]
 				var kkk = kod[1]
+				//if(kk == void(0) || kkk == void(0))return
 				//console.log(kod[0].split("/")[0] + "  bbbbbbbbbbbbbbbb")
 				if(kk.replace("/","") == "49" && kkk.replace("/","") == "49")systemlicz = 10
 				if(kk.replace("/","") == "45" && kkk.replace("/","") == "45")systemlicz = 11
@@ -225,7 +227,6 @@ class superplugin {
 				if(kkk.replace("/","") == "106")systemlicz = 7
 				if(kkk.replace("/","") == "70")systemlicz = 8
 				if(kkk.replace("/","") == "63")systemlicz = 9
-				var kodt
 				for (let i = 0; i < kod.length; i++) {
 					kod[i] = kod[i].split("/")
 				}
