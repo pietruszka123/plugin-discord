@@ -5,7 +5,7 @@ const { get } = require("request");
 class superplugin {
     getName() {return "super plugin";}
     getDescription() {return "?";}
-    getVersion() {return "0.0.1";}
+    getVersion() {return "0.0.2";}
     getAuthor() {return "pietruszka123";}
 	getSettingsPanel(){
 		let panel = $(`<form class="form" style="width:100%;"></form>`)[0];
@@ -112,7 +112,7 @@ class superplugin {
 				   let slowo = this.settings.slowo
 				   let wiadomosc = ""
 
-				   console.log(this.settings.raw + " aaa")
+				   console.log(this.settings.raw + " aaaa")
 				   if(this.settings.raw){
 					   if(this.settings.liczby == 2){
 					   wiadomosc = wynik.split(" ")
