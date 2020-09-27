@@ -5,7 +5,7 @@ const { get } = require("request");
 class superplugin {
     getName() {return "super plugin";}
     getDescription() {return "?";}
-    getVersion() {return "0.0.2";}
+    getVersion() {return "0.0.3";}
     getAuthor() {return "pietruszka123";}
 	getSettingsPanel(){
 		let panel = $(`<form class="form" style="width:100%;"></form>`)[0];
@@ -17,15 +17,23 @@ class superplugin {
 		new ZLibrary.Settings.SettingGroup(this.getName(), {shown:true}).appendTo(panel)
 		.append(
 			new ZLibrary.Settings.Textbox("system liczbowy", "opis", this.settings.liczby, (e)=>{
-				this.settings.liczby = e;
 				///*if(e > this.settings.slowo)*/panel.getElementsByClassName("inputDefault-_djjkz input-cIJ7To da-inputDefault da-input")[0].defaultValue = "tak"//this.settings.slowo.length
 				//console.log(panel.getElementsByClassName("inputDefault-_djjkz input-cIJ7To da-inputDefault da-input"))
 				//console.log(panel.getElementsByClassName("inputDefault-_djjkz input-cIJ7To da-inputDefault da-input")[0].attributes[6].textContent)
+				if(isNaN(e)){console.log("cccc"); return};
+				console.log(parseInt(e) < lslow.length)
+				if(!parseInt(e) < lslow.length){
+					this.settings.liczby = lslow.length;
+					console.log("czemu")
+				}
+				else{
+				this.settings.liczby = e;
+				}
 				this.saveSettings();
 			}),
 			new ZLibrary.Settings.Textbox("slow", "opis", lslow, (e)=>{
 					this.settings.slowo = e.split("");
-					this.settings.liczby = e.length
+					//this.settings.liczby = e.length
 					this.saveSettings();
 			}),
 			new ZLibrary.Settings.Switch("same liczby", "opis", this.settings.raw, (e)=>{
@@ -181,38 +189,49 @@ class superplugin {
 		//if(message.length){
 			var array = message.content
 			var kod = ""
-			array = array.split(" ")
+			var spos = []
+			//array = array.split(" ")
+			console.log(array)
 			for (let i = 0; i < array.length; i++) {
-				for (let j = 0; j < array[i].length; j++) {
-					var k = this.settings.slowo.indexOf(array[i][j])
-					if(array[i][j] == "Q") kod += " "
+				//for (let j = 0; j < array[i].length; j++) {
+					var k = this.settings.slowo.indexOf(array[i])
+					if(array[i] == "Q") kod += "/"
+					if(array[i] == " ") kod += " "
 					if(k != -1){
 						kod += k;
 					}
-				}
+				//}
 				//kod += " ";	
 			}
-			console.log(kod)
 			var systemlicz = 0
-			if(kod.split(" ")[0] == "49" && kod.split(" ")[1] == "49")systemlicz = 10
-			if(kod.split(" ")[0] == "45" && kod.split(" ")[1] == "45")systemlicz = 11
-			if(kod.split(" ")[0] == "41" && kod.split(" ")[1] == "42")systemlicz = 12
-			if(kod.split(" ")[0] == "3a" && kod.split(" ")[1] == "3c")systemlicz = 13
-			if(kod.split(" ")[0] == "37" && kod.split(" ")[1] == "3a")systemlicz = 14
-			if(kod.split(" ")[0] == "34" && kod.split(" ")[1] == "38")systemlicz = 15
-			if(kod.split(" ")[0] == "31" && kod.split(" ")[1] == "36")systemlicz = 16
-			if(kod.split(" ")[0] == "2f" && kod.split(" ")[1] == "34")systemlicz = 17
-			if(kod.split(" ")[1] == "110010")systemlicz = 2
-			if(kod.split(" ")[1] ==  "1220")systemlicz = 3
-			if(kod.split(" ")[1] == "310")systemlicz = 4
-			if(kod.split(" ")[1] == "203")systemlicz = 5
-			if(kod.split(" ")[1] == "130")systemlicz = 6
-			if(kod.split(" ")[1] == "106")systemlicz = 7
-			if(kod.split(" ")[1] == "70")systemlicz = 8
-			if(kod.split(" ")[1] == "63")systemlicz = 9
 			kod = kod.split(" ")
-			kod.splice(0,2)
-			//console.log(kod.splice(0,2))
+			console.log(kod)		
+				var kk = kod[0]
+				var kkk = kod[1]
+				//console.log(kod[0].split("/")[0] + "  bbbbbbbbbbbbbbbb")
+				if(kk.replace("/","") == "49" && kkk.replace("/","") == "49")systemlicz = 10
+				if(kk.replace("/","") == "45" && kkk.replace("/","") == "45")systemlicz = 11
+				if(kk.replace("/","") == "41" && kkk.replace("/","") == "42")systemlicz = 12
+				if(kk.replace("/","") == "3a" && kkk.replace("/","") == "3c")systemlicz = 13
+				if(kk.replace("/","") == "37" && kkk.replace("/","") == "3a")systemlicz = 14
+				if(kk.replace("/","") == "34" && kkk.replace("/","") == "38")systemlicz = 15
+				if(kk.replace("/","") == "31" && kkk.replace("/","") == "36")systemlicz = 16
+				if(kk.replace("/","") == "2f" && kkk.replace("/","") == "34")systemlicz = 17
+				if(kkk.replace("/","") == "110010")systemlicz = 2
+				if(kkk.replace("/","") ==  "1220")systemlicz = 3
+				if(kkk.replace("/","") == "310")systemlicz = 4
+				if(kkk.replace("/","") == "203")systemlicz = 5
+				if(kkk.replace("/","") == "130")systemlicz = 6
+				if(kkk.replace("/","") == "106")systemlicz = 7
+				if(kkk.replace("/","") == "70")systemlicz = 8
+				if(kkk.replace("/","") == "63")systemlicz = 9
+				var kodt
+				for (let i = 0; i < kod.length; i++) {
+					kod[i] = kod[i].split("/")
+				}
+				kod.splice(0,2)
+			console.log(systemlicz)
+			console.log(kod)
 			// var system = [array[0],array[1]]
 			// array.splice(0,1);
 			// if(system[0] != 0){
@@ -223,10 +242,14 @@ class superplugin {
 			// }
 			var wynik = ""
 			if(systemlicz != 0){
-			for (let i = 0; i < kod.length-1; i++) {
-				console.log(String.fromCharCode(parseInt(kod[i],systemlicz)))
-				if(message.content[i] == " ")wynik += " "
-				wynik += String.fromCharCode(parseInt(kod[i],systemlicz))
+			for (let j = 0; j < kod.length; j++) {
+			for (let i = 0; i < kod[j].length-1; i++) {
+				console.log(String.fromCharCode(parseInt(kod[j][i],systemlicz)))
+				//if(spos.includes(i)){console.log(i);wynik += " "}
+				wynik += String.fromCharCode(parseInt(kod[j][i],systemlicz))
+				//console.log(mm[i] + " mmm")
+			}
+			wynik += " "
 			}
 			let cId = message.channel_id
 			if(!cId) return;
