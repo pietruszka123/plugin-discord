@@ -5,7 +5,7 @@ const { get } = require("request");
 class superplugin {
     getName() {return "super plugin";}
     getDescription() {return "?";}
-    getVersion() {return "0.0.4";}
+    getVersion() {return "0.0.5";}
     getAuthor() {return "pietruszka123";}
 	getSettingsPanel(){
 		let panel = $(`<form class="form" style="width:100%;"></form>`)[0];
@@ -231,8 +231,8 @@ class superplugin {
 					kod[i] = kod[i].split("/")
 				}
 				kod.splice(0,2)
-			console.log(systemlicz)
-			console.log(kod)
+			//console.log(systemlicz)
+			//console.log(kod)
 			// var system = [array[0],array[1]]
 			// array.splice(0,1);
 			// if(system[0] != 0){
@@ -245,7 +245,7 @@ class superplugin {
 			if(systemlicz != 0){
 			for (let j = 0; j < kod.length; j++) {
 			for (let i = 0; i < kod[j].length-1; i++) {
-				console.log(String.fromCharCode(parseInt(kod[j][i],systemlicz)))
+				//console.log(String.fromCharCode(parseInt(kod[j][i],systemlicz)))
 				//if(spos.includes(i)){console.log(i);wynik += " "}
 				wynik += String.fromCharCode(parseInt(kod[j][i],systemlicz))
 				//console.log(mm[i] + " mmm")
