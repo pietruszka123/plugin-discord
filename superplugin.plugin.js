@@ -5,7 +5,7 @@ const { get } = require("request");
 class superplugin {
     getName() {return "super plugin";}
     getDescription() {return "?";}
-    getVersion() {return "0.0.5";}
+    getVersion() {return "0.0.6";}
     getAuthor() {return "pietruszka123";}
 	getSettingsPanel(){
 		let panel = $(`<form class="form" style="width:100%;"></form>`)[0];
@@ -21,10 +21,11 @@ class superplugin {
 				//console.log(panel.getElementsByClassName("inputDefault-_djjkz input-cIJ7To da-inputDefault da-input"))
 				//console.log(panel.getElementsByClassName("inputDefault-_djjkz input-cIJ7To da-inputDefault da-input")[0].attributes[6].textContent)
 				if(isNaN(e)){console.log("cccc"); return};
-				console.log(parseInt(e) < lslow.length)
-				if(!parseInt(e) < lslow.length){
+				console.log(parseInt(e))
+				console.log(parseInt(e) > lslow.length)
+				if(parseInt(e) > lslow.length){
 					this.settings.liczby = lslow.length;
-					console.log("czemu")
+					console.log(parseInt(e))
 				}
 				else{
 				this.settings.liczby = e;
@@ -68,12 +69,13 @@ class superplugin {
 			}
 		}
     start() {
+		console.log(Object.keys(ZLibrary.DiscordModules.MessageActions))
         if (!global.ZeresPluginLibrary) return window.BdApi.alert("Library Missing",`The library plugin needed for ${this.getName()} is missing.<br /><br /> <a href="https://betterdiscord.net/ghdl?url=https://raw.githubusercontent.com/rauenzi/BDPluginLibrary/master/release/0PluginLibrary.plugin.js" target="_blank">Click here to download the library!</a>`);
 		if (global.ZeresPluginLibrary) this.initialize();
+		console.log(BdApi.findModuleByProps("dispatch"))
 		this.cancelPatch = BdApi.monkeyPatch(BdApi.findModuleByProps("dispatch"), 'dispatch', { after: this.dispatch.bind(this) });
 
     }
-
     stop() {
 		const chatbox = document.querySelector(".slateTextArea-1Mkdgw");
 		if(chatbox) chatbox.removeEventListener("keydown", this.onChatInput);
@@ -269,7 +271,13 @@ class superplugin {
 	onMessageOptionToolbar(){
 		console.log("taktaktak")
 	}
-
+	static openContextMenu(event, menuComponent, config) {
+           
+		//return ContextMenuActions.openContextMenu(event, function(e) {
+			console.log("test")
+			//return ce(menuComponent, e);
+		//}, config);
+	}
 	onSwitch(){
 		const chatbox = document.querySelector(".slateTextArea-1Mkdgw");
 		if(chatbox) chatbox.addEventListener("keydown", this.onChatInput);
