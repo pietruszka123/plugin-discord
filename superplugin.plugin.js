@@ -1,11 +1,11 @@
 //META{"name":"superplugin"}*//
 
-const { get } = require("request");
+
 
 class superplugin {
     getName() {return "super plugin";}
     getDescription() {return "?";}
-    getVersion() {return "0.0.6";}
+    getVersion() {return "0.0.7";}
     getAuthor() {return "pietruszka123";}
 	getSettingsPanel(){
 		let panel = $(`<form class="form" style="width:100%;"></form>`)[0];
@@ -69,13 +69,21 @@ class superplugin {
 			}
 		}
     start() {
-		console.log(Object.keys(ZLibrary.DiscordModules.MessageActions))
-        if (!global.ZeresPluginLibrary) return window.BdApi.alert("Library Missing",`The library plugin needed for ${this.getName()} is missing.<br /><br /> <a href="https://betterdiscord.net/ghdl?url=https://raw.githubusercontent.com/rauenzi/BDPluginLibrary/master/release/0PluginLibrary.plugin.js" target="_blank">Click here to download the library!</a>`);
-		if (global.ZeresPluginLibrary) this.initialize();
-		console.log(BdApi.findModuleByProps("dispatch"))
-		this.cancelPatch = BdApi.monkeyPatch(BdApi.findModuleByProps("dispatch"), 'dispatch', { after: this.dispatch.bind(this) });
+		ZLibrary.PluginUpdater.checkForUpdate(this.getName(), this.getVersion(), "https://raw.githubusercontent.com/pietruszka123/plugin-discord/master/superplugin.plugin.js");
+		//console.log(Object.keys(ZLibrary.DiscordModules.MessageActions))
+        //if (!global.ZeresPluginLibrary) return window.BdApi.alert("Library Missing",`The library plugin needed for ${this.getName()} is missing.<br /><br /> <a href="https://betterdiscord.net/ghdl?url=https://raw.githubusercontent.com/rauenzi/BDPluginLibrary/master/release/0PluginLibrary.plugin.js" target="_blank">Click here to download the library!</a>`);
+		//if (global.ZeresPluginLibrary) this.initialize();
+		//console.log(BdApi.findModuleByProps("dispatch"))
+		//this.cancelPatch = BdApi.monkeyPatch(BdApi.findModuleByProps("dispatch"), 'dispatch', { after: this.dispatch.bind(this) });
 
-    }
+	}
+	load(){
+		if (!global.ZeresPluginLibrary) return window.BdApi.alert("Library Missing",`The library plugin needed for ${this.getName()} is missing.<br /><br /> <a href="https://betterdiscord.net/ghdl?url=https://raw.githubusercontent.com/rauenzi/BDPluginLibrary/master/release/0PluginLibrary.plugin.js" target="_blank">Click here to download the library!</a>`);
+		if (global.ZeresPluginLibrary) this.initialize();
+		ZLibrary.PluginUpdater.checkForUpdate(this.getName(), this.getVersion(), "https://raw.githubusercontent.com/pietruszka123/plugin-discord/master/superplugin.plugin.js");
+		//console.log(BdApi.findModuleByProps("dispatch"))
+		this.cancelPatch = BdApi.monkeyPatch(BdApi.findModuleByProps("dispatch"), 'dispatch', { after: this.dispatch.bind(this) });
+	}
     stop() {
 		const chatbox = document.querySelector(".slateTextArea-1Mkdgw");
 		if(chatbox) chatbox.removeEventListener("keydown", this.onChatInput);
@@ -171,6 +179,21 @@ class superplugin {
 					ZLibrary.DiscordModules.MessageActions.sendMessage(cId, {content:wiadomosc})
 					//ZLibrary.DiscordModules.MessageActions.sendBotMessage(cId, "Please use a smaller field size.")
 			//}
+			e.stopPropagation()
+		}else if(chatboxValue.toLowerCase().startsWith("r:")){
+			chatboxValue = chatboxValue.substr(this.prefix.length).trim();
+			let wiadomosc = ""
+			let t = chatboxValue.length-1
+			for (let i = 0; i < chatboxValue.length; i++) {
+				wiadomosc += chatboxValue[t]
+				t--;			
+				
+			}
+			let cId = ZLibrary.DiscordModules.SelectedChannelStore.getChannelId();
+			if(!cId) return;
+			console.log(wiadomosc)
+			ZLibrary.DiscordModules.MessageActions.sendMessage(cId, {content:wiadomosc})
+
 			e.stopPropagation()
 		}
 		}
