@@ -5,7 +5,7 @@
 class superplugin {
     getName() {return "super plugin";}
     getDescription() {return "?";}
-    getVersion() {return "0.0.7";}
+    getVersion() {return "0.0.8";}
     getAuthor() {return "pietruszka123";}
 	getSettingsPanel(){
 		let panel = $(`<form class="form" style="width:100%;"></form>`)[0];
@@ -194,6 +194,66 @@ class superplugin {
 			console.log(wiadomosc)
 			ZLibrary.DiscordModules.MessageActions.sendMessage(cId, {content:wiadomosc})
 
+			e.stopPropagation()
+		}else if(chatboxValue.toLowerCase().startsWith("rng:")){
+			chatboxValue = chatboxValue.substr(4).trim();
+			var wiadomosc = "";
+			function randomWord(slowo){
+			let ret = "";
+			let chars  = []
+			let charsMax = [];
+			let charsNow = [];
+			for (let i = 0; i < slowo.length; i++) {
+				if(chars.includes(slowo[i])){
+					charsMax[chars.indexOf(slowo[i])] += 1
+				}
+				else{
+					chars.push(slowo[i]);
+					charsMax.push(1);
+					charsNow.push(0);
+				}
+			}
+			console.log(chars);
+			console.log(charsMax);
+			for (let i = 0; i < slowo.length; i++) {
+				var rng = Math.floor(Math.random() * (slowo.length - 0)) + 0;
+				while(charsMax[chars.indexOf(slowo[rng])] == charsNow[chars.indexOf(slowo[rng])]){
+					rng = Math.floor(Math.random() * (slowo.length - 0)) + 0;
+				}
+				charsNow[chars.indexOf(slowo[rng])] += 1;
+				ret += slowo[rng];
+			}
+			/*
+			for(let i = 0; i < ch.length;i++){
+				//var re = new RegExp(chatboxValue[i], "g");
+				if(chars.includes(ch[i]) && ch[i] != " "){
+					charsMax[chars.indexOf(ch[i])] += 1
+				}
+				else if(ch[i] != " "){
+					chars.push(ch[i]);
+					charsMax.push(1);
+					charsNow.push(0);
+				}
+			}*/
+			console.log(charsNow);
+			return ret
+			}
+			var ch = chatboxValue.split(/[ ]+/)
+			for (let i = 0; i < ch.length; i++) {
+				wiadomosc += randomWord(ch[i]) + " ";
+			}
+			/*var w = wiadomosc;
+			w.replace(/\s+/g, '');
+			var ch = chatboxValue;
+			ch.replace(/\s+/g, '')
+			if(w == ch && chatboxValue.length > 1){
+				console.log("same");
+				random();
+			}*/
+			let cId = ZLibrary.DiscordModules.SelectedChannelStore.getChannelId();
+			if(!cId) return;
+			console.log(wiadomosc)
+			ZLibrary.DiscordModules.MessageActions.sendMessage(cId, {content:wiadomosc})
 			e.stopPropagation()
 		}
 		}
