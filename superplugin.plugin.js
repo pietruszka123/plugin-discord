@@ -5,7 +5,7 @@
 class superplugin {
     getName() {return "super plugin";}
     getDescription() {return "?";}
-    getVersion() {return "0.1.1";}
+    getVersion() {return "0.0.9";}
     getAuthor() {return "pietruszka123";}
 	getSettingsPanel(){
 		let panel = $(`<form class="form" style="width:100%;"></form>`)[0];
