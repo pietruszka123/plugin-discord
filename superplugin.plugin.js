@@ -5,7 +5,7 @@
 class superplugin {
     getName() {return "super plugin";}
     getDescription() {return "?";}
-    getVersion() {return "0.0.8";}
+    getVersion() {return "0.1.1";}
     getAuthor() {return "pietruszka123";}
 	getSettingsPanel(){
 		let panel = $(`<form class="form" style="width:100%;"></form>`)[0];
@@ -238,18 +238,21 @@ class superplugin {
 			console.log(charsNow);
 			return ret
 			}
-			var ch = chatboxValue.split(/[ ]+/)
+			run();
+			
+			function run(){
+				var ch = chatboxValue.split(/[ ]+/)
+				wiadomosc = ""
 			for (let i = 0; i < ch.length; i++) {
 				wiadomosc += randomWord(ch[i]) + " ";
 			}
-			/*var w = wiadomosc;
-			w.replace(/\s+/g, '');
-			var ch = chatboxValue;
-			ch.replace(/\s+/g, '')
+			}
+			var w = wiadomosc.replace(/[ ]+/, '');
+			var ch = chatboxValue.replace(/[ ]+/, '');
 			if(w == ch && chatboxValue.length > 1){
 				console.log("same");
-				random();
-			}*/
+				run();
+			}
 			let cId = ZLibrary.DiscordModules.SelectedChannelStore.getChannelId();
 			if(!cId) return;
 			console.log(wiadomosc)
