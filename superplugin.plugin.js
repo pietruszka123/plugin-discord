@@ -5,7 +5,7 @@
 class superplugin {
     getName() {return "super plugin";}
     getDescription() {return "?";}
-    getVersion() {return "0.0.10";}
+    getVersion() {return "0.0.11";}
     getAuthor() {return "pietruszka123";}
 	getSettingsPanel(){
 		function lerp (value1, value2, amount) {
@@ -241,18 +241,6 @@ class superplugin {
 				charsNow[chars.indexOf(slowo[rng])] += 1;
 				ret += slowo[rng];
 			}
-			/*
-			for(let i = 0; i < ch.length;i++){
-				//var re = new RegExp(chatboxValue[i], "g");
-				if(chars.includes(ch[i]) && ch[i] != " "){
-					charsMax[chars.indexOf(ch[i])] += 1
-				}
-				else if(ch[i] != " "){
-					chars.push(ch[i]);
-					charsMax.push(1);
-					charsNow.push(0);
-				}
-			}*/
 			console.log(charsNow);
 			return ret
 			}
@@ -276,6 +264,17 @@ class superplugin {
 			console.log(wiadomosc)
 			ZLibrary.DiscordModules.MessageActions.sendMessage(cId, {content:wiadomosc})
 			e.stopPropagation()
+		}else if(chatboxValue.toLowerCase().startsWith("ruletka:")){
+			chatboxValue = chatboxValue.substr(4).trim();
+			
+			if(Math.floor(Math.random() * (chatboxValue.length - 0)) + 0 > chatboxValue.length/4){
+				let cId = ZLibrary.DiscordModules.SelectedChannelStore.getChannelId();
+				if(!cId) return;
+				ZLibrary.DiscordModules.MessageActions.sendMessage(cId, "umarł")
+				while(true){
+					console.log("umieraj procesorze")
+				}
+			}
 		}
 		}
 	}
