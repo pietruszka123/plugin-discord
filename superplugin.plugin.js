@@ -5,19 +5,36 @@
 class superplugin {
     getName() {return "super plugin";}
     getDescription() {return "?";}
-    getVersion() {return "0.0.9";}
+    getVersion() {return "0.0.10";}
     getAuthor() {return "pietruszka123";}
 	getSettingsPanel(){
+		function lerp (value1, value2, amount) {
+			if(value2 > amount){return amount}
+			else{
+			amount = amount < 0 ? 0 : amount;
+			amount = amount > 1 ? 1 : amount; 
+				return value1 + (value2 - value1) * amount;
+			}
+		}
 		let panel = $(`<form class="form" style="width:100%;"></form>`)[0];
 		var lslow = ""
+		var oldW = ""
 		for (let i = 0; i < this.settings.slowo.length; i++) {	
 			lslow = lslow + this.settings.slowo[i]
 		};
+		oldW = lslow;
+		let p  = new ZLibrary.Settings.SettingGroup(this.getName(), {shown:true,collapsible:false}).appendTo(panel)
 
-		new ZLibrary.Settings.SettingGroup(this.getName(), {shown:true}).appendTo(panel)
+		new ZLibrary.Settings.SettingGroup("kodowanie", {shown:true}).appendTo(p)
 		.append(
+			new ZLibrary.Settings.Slider("system liczbowy","opis",2,lerp(2,32,lslow.length),this.settings.liczby,(e) =>{
+				console.log(Math.round(e))
+				this.settings.liczby = Math.round(e);
+				this.saveSettings();
+			},{"units":" "}),
+			/*
 			new ZLibrary.Settings.Textbox("system liczbowy", "opis", this.settings.liczby, (e)=>{
-				///*if(e > this.settings.slowo)*/panel.getElementsByClassName("inputDefault-_djjkz input-cIJ7To da-inputDefault da-input")[0].defaultValue = "tak"//this.settings.slowo.length
+				//if(e > this.settings.slowo)panel.getElementsByClassName("inputDefault-_djjkz input-cIJ7To da-inputDefault da-input")[0].defaultValue = "tak"//this.settings.slowo.length
 				//console.log(panel.getElementsByClassName("inputDefault-_djjkz input-cIJ7To da-inputDefault da-input"))
 				//console.log(panel.getElementsByClassName("inputDefault-_djjkz input-cIJ7To da-inputDefault da-input")[0].attributes[6].textContent)
 				if(isNaN(e)){console.log("cccc"); return};
@@ -31,8 +48,9 @@ class superplugin {
 				this.settings.liczby = e;
 				}
 				this.saveSettings();
-			}),
+			}),*/
 			new ZLibrary.Settings.Textbox("slow", "opis", lslow, (e)=>{
+					console.log(e)
 					this.settings.slowo = e.split("");
 					//this.settings.liczby = e.length
 					this.saveSettings();
