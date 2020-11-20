@@ -5,7 +5,7 @@
 class superplugin {
     getName() {return "super plugin";}
     getDescription() {return "?";}
-    getVersion() {return "0.0.12";}
+    getVersion() {return "0.1.0";}
 	getAuthor() {return "pietruszka123";}
 	getSettingsPanel(){
 		function lerp (value1, value2, amount) {
@@ -108,7 +108,8 @@ class superplugin {
 		return [{title:"zmiany",items:[
 			"suwak zamiast textboxa do wprowadzania systemy liczbowego",
 			"obsługa powtórzeń znaków w `kodzie` częściowa bez tłumaczenia ",
-			"tłumaczenie po najechaniu na wiadomosc"
+			"tłumaczenie po najechaniu na wiadomosc",
+			"komęda color: {kod koloru hex lub nazwa np. blue} {tekst}"
 
 
 
@@ -410,6 +411,50 @@ class superplugin {
 			if(!cId) return;
 			ZLibrary.DiscordModules.MessageActions.sendMessage(cId, {content:wiadomosc})
 			e.stopPropagation()
+		}else if(chatboxValue.toLowerCase().startsWith("color:")){
+					chatboxValue = chatboxValue.substr("color:".length).trim();
+					//var str = "jhdnhjnhduhdnhdind    ⁪⁪   ⁪⁪   ⁪⁪   ⁪⁪   ⁪⁪   ⁪⁪ "
+					var znaki = ["0", "1", "2", "3", "4", "5"] //["⁪⁪ ","᲼"," "," "," "," "]
+					var rozdzielac = "6" //" ";
+					//const numericalChar = new Set(["⁪⁪ ","᲼"," "," "," "," "]);
+					//str = str.split("").filter(char => numericalChar.has(char)).join("");
+					//console.log(str + "str")
+					//console.log(chatboxValue.indexOf("("))
+					chatboxValue = chatboxValue.split(" ")
+					console.log(chatboxValue[0] + " kolor")
+					var tonumber = ""
+					var color = chatboxValue[0]
+					chatboxValue.shift()
+					var chat = ""
+					for (let i = 0; i < chatboxValue.length; i++) {
+						chat += chatboxValue[i]
+						if(i != chatboxValue.length-1) chat += " "
+						
+					}
+					chatboxValue = chat;
+					for (let i = 0; i < color.length; i++) {
+						tonumber += color[i].charCodeAt(0).toString(6) + rozdzielac
+						console.log(i)
+					}
+					console.log(tonumber + "to num " + tonumber.length)
+					var wynik = ""
+
+					for (let i = 0; i < tonumber.length; i++) {
+						if (tonumber[i] == rozdzielac) {
+							wynik += rozdzielac
+						} else {
+							wynik += znaki[tonumber[i]]
+						}
+					}
+					if (chatboxValue != "") {
+						var wiadomosc = chatboxValue + wynik
+						let cId = ZLibrary.DiscordModules.SelectedChannelStore.getChannelId();
+						if (!cId) return;
+						ZLibrary.DiscordModules.MessageActions.sendMessage(cId, { content: wiadomosc })//'["⁪⁪ ","᲼"," "," "," "," "," "]'})
+					}else{
+						ZLibrary.Toasts.show("brak wiadomości do wysłania",{type:"error"})
+					}
+					e.stopPropagation()
 		}
 		}
 	}
@@ -454,15 +499,76 @@ class superplugin {
 		}
 		if(systemlicz <= 0){
 			return new Error("brak definicji systemu liczbowego w wiadomości")
-		}if(kod.length <= 0){
-			return new Error("Brak wiadomości")
+		}if(kod.length <= 0 && systemlicz <= 0){
+			return new Error("Brak danych" + data)
+		}if(kod.length <= 0 && systemlicz != 0){
+			return new Error("brak wiadomośći")
 		}
 		return new Error("nieznany błąd")
 	}
+	decodeColor(data){
+			var znaki = ["0","1","2","3","4","5"]//["⁪⁪ ","᲼"," "," "," "," "]
+			var rozdzielacz = "6"  //" "
+			const numericalChar = new Set(["0","1","2","3","4","5","6"])//["⁪⁪ ","᲼"," "," "," "," "," "]);
+			data = data.split("").filter(char => numericalChar.has(char)).join("");
+			var array = data;
+			var kod = ""
+		for (let i = 0; i < array.length; i++) {
+			var k = znaki.indexOf(array[i])
+			if (array[i] == rozdzielacz) kod += "/"
+			if (array[i] == " ") kod += " "
+			if (k != -1) {
+				kod += k;
+			}
+		}
+		//console.log(kod)
+		var systemlicz = 0
+		kod = kod.split(" ")
+		var systemlicz = 6
+		for (let i = 0; i < kod.length; i++) {
+			kod[i] = kod[i].split("/")
+		}
+		var wynik = ""
+		if (systemlicz != 0 && kod.length > 0) {
+			for (let j = 0; j < kod.length; j++) {
+				for (let i = 0; i < kod[j].length - 1; i++) {
+					wynik += String.fromCharCode(parseInt(kod[j][i], systemlicz))
+				}
+			}
+			return {wynik:wynik,raw:data}
+		}
+		return "error"
+	}
+	updateColor(){
+		const messages = document.querySelectorAll(".da-messageContent");
+		//this.decodeColor(messages[messages.length-1].innerText)
+		messages.forEach(element => {
+			var data = element.innerText;
+			/*
+			var t = ["⁪⁪ ","᲼"," "," "," "," "];
+			for (let i = 0; i < t.length; i++) {
+				console.log((data.includes(t[i])) + "#" + t[i] + "#")
+				
+			}*/
+			const numericalChar = new Set(["0","1","2","3","4","5","6"])//["⁪⁪ ","᲼"," "," "," "," "," "]);
+			data = data.split("").filter(char => numericalChar.has(char)).join("");
+			if(data.length > 0){
+				//if(this.decodeColor(element.innerText).includes("#")){
+					//console.log("tek")
+					var color = this.decodeColor(element.innerText)
+					//console.log(this.decodeColor(element.innerText))
+					element.style.color = color.wynik//this.settings.TextColor//this.decodeColor(element.innerText)
+					element.innerText = element.innerText.replace(color.raw,"")
+				//}
+			}
+		})
+	}
 	dispatch(data) {
-		this.fetchmessages()
+		if (data.methodArguments[0].type !== 'MESSAGE_CREATE')return;
+		this.fetchmessages();
+		this.updateColor();
 		// //console.log(data.methodArguments[0])
-        // if (data.methodArguments[0].type !== 'MESSAGE_CREATE')
+        //if (data.methodArguments[0].type !== 'MESSAGE_CREATE')
 		// 	return;
 		// const message = data.methodArguments[0].message;
 		// if (message.author.id === BdApi.findModuleByProps('getId').getId()){
@@ -549,6 +655,7 @@ class superplugin {
 		const chatbox = document.querySelector(".slateTextArea-1Mkdgw");
 		if(chatbox) chatbox.addEventListener("keydown", this.onChatInput);
 		this.fetchmessages()
+		this.updateColor()
 	}
 	fetchmessages(){
 		const messages = document.querySelectorAll(".da-messageContent")
