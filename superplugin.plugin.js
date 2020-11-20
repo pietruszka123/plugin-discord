@@ -5,8 +5,8 @@
 class superplugin {
     getName() {return "super plugin";}
     getDescription() {return "?";}
-    getVersion() {return "0.0.12";}
-	getAuthor() {return "pietruszka123";}
+    getVersion() {return "0.0.11";}
+    getAuthor() {return "pietruszka123";}
 	getSettingsPanel(){
 		function lerp (value1, value2, amount) {
 			if(value2 > amount){return amount}
@@ -28,7 +28,6 @@ class superplugin {
 		new ZLibrary.Settings.SettingGroup("kodowanie", {shown:true}).appendTo(p)
 		.append(
 			new ZLibrary.Settings.Slider("system liczbowy","opis",2,lerp(2,32,lslow.length),this.settings.liczby,(e) =>{
-				if(Math.round(e) > this.settings.slowo.length)ZLibrary.Toasts.show("liczba jest większa ",{type:"error"})
 				console.log(Math.round(e))
 				this.settings.liczby = Math.round(e);
 				this.saveSettings();
@@ -51,10 +50,11 @@ class superplugin {
 				this.saveSettings();
 			}),*/
 			new ZLibrary.Settings.Textbox("slow", "opis", lslow, (e)=>{
+					console.log(e)
 					this.settings.slowo = e.split("");
 					//this.settings.liczby = e.length
 					this.saveSettings();
-			},{disabled:this.settings.raw}),
+			}),
 			new ZLibrary.Settings.Switch("same liczby", "opis", this.settings.raw, (e)=>{
 				//window.BdApi.alert("aaaa")
 				this.settings.raw = e
@@ -70,17 +70,6 @@ class superplugin {
 				if(e == "" || e == " ")return
 				this.settings.rozdzielacz = e
 				this.saveSettings();
-			}),
-			new ZLibrary.Settings.Textbox("rozdzielac2", "opis", this.settings.rozdzielacz2, (e)=>{
-				//window.BdApi.alert("aaaa")
-				if(e == "" || e == " ")return
-				this.settings.rozdzielacz2 = e
-				this.saveSettings();
-			},{disabled:true}),
-			new ZLibrary.Settings.ColorPicker("kolor teksu po przetłumaczeniu","opis",this.settings.TextColor,(e) =>{
-				console.log(e)
-				this.settings.TextColor = e
-				this.saveSettings();
 			})
 
 		);
@@ -91,95 +80,34 @@ class superplugin {
 			return {
 				liczby: 5,
 				slowo: "DRZWI",
-				numeracja: "/",
 				raw: false,
 				old: false,
-				rozdzielacz: "Μ",//о MB ΜΒ
-				rozdzielacz2: "Β",
-				TextColor: "#0000ff",
-				lastUsedVersion: "0.0.0",
-				showedChangelog: false,
+				rozdzielacz: "Q",
+				lastUsedVersion: "0.0.0"
 			}
 		}
-		constructor(){
-			this.started = false;
-		}
-	getChangelog(){
-		return [{title:"zmiany",items:[
-			"suwak zamiast textboxa do wprowadzania systemy liczbowego",
-			"obsługa powtórzeń znaków w `kodzie` częściowa bez tłumaczenia ",
-			"tłumaczenie po najechaniu na wiadomosc"
-
-
-
-		]}]
-	}
     start() {
-		console.log("start")
-		console.log(this.started)
-		if(!this.started){
-			this.started = true;
-			console.log("started")
-			ZLibrary.PluginUpdater.checkForUpdate(this.getName(), this.getVersion(), "https://raw.githubusercontent.com/pietruszka123/plugin-discord/master/superplugin.plugin.js");
-			//console.log(Object.keys(ZLibrary.DiscordModules.MessageActions))
-        	if (!global.ZeresPluginLibrary) return window.BdApi.alert("Library Missing",`The library plugin needed for ${this.getName()} is missing.<br /><br /> <a href="https://betterdiscord.net/ghdl?url=https://raw.githubusercontent.com/rauenzi/BDPluginLibrary/master/release/0PluginLibrary.plugin.js" target="_blank">Click here to download the library!</a>`);
-			if (global.ZeresPluginLibrary) this.initialize();
-			//console.log(BdApi.findModuleByProps("dispatch"))
-			this.cancelPatch = BdApi.monkeyPatch(BdApi.findModuleByProps("dispatch"), 'dispatch', { after: this.dispatch.bind(this) });
-			this.fetchmessages()
-		}
+		ZLibrary.PluginUpdater.checkForUpdate(this.getName(), this.getVersion(), "https://raw.githubusercontent.com/pietruszka123/plugin-discord/master/superplugin.plugin.js");
+		//console.log(Object.keys(ZLibrary.DiscordModules.MessageActions))
+        //if (!global.ZeresPluginLibrary) return window.BdApi.alert("Library Missing",`The library plugin needed for ${this.getName()} is missing.<br /><br /> <a href="https://betterdiscord.net/ghdl?url=https://raw.githubusercontent.com/rauenzi/BDPluginLibrary/master/release/0PluginLibrary.plugin.js" target="_blank">Click here to download the library!</a>`);
+		//if (global.ZeresPluginLibrary) this.initialize();
+		//console.log(BdApi.findModuleByProps("dispatch"))
+		//this.cancelPatch = BdApi.monkeyPatch(BdApi.findModuleByProps("dispatch"), 'dispatch', { after: this.dispatch.bind(this) });
 
 	}
 	load(){
-		console.log("load")
-		console.log(this.started)
-		if(!this.started){
-			this.started = true;
-			console.log("loaded")
-			if (!global.ZeresPluginLibrary) return window.BdApi.alert("Library Missing",`The library plugin needed for ${this.getName()} is missing.<br /><br /> <a href="https://betterdiscord.net/ghdl?url=https://raw.githubusercontent.com/rauenzi/BDPluginLibrary/master/release/0PluginLibrary.plugin.js" target="_blank">Click here to download the library!</a>`);
-			if (global.ZeresPluginLibrary) this.initialize();
-			if(this.settings.lastUsedVersion != this.getVersion()){
-				this.settings.lastUsedVersion = this.getVersion();
-				this.saveSettings();
-				ZLibrary.Modals.showChangelogModal(this.getName() + " Changelog", this.getVersion(), this.getChangelog());
-			}
-			ZLibrary.PluginUpdater.checkForUpdate(this.getName(), this.getVersion(), "https://raw.githubusercontent.com/pietruszka123/plugin-discord/master/superplugin.plugin.js");
-			//console.log(BdApi.findModuleByProps("dispatch"))
-			this.cancelPatch = BdApi.monkeyPatch(BdApi.findModuleByProps("dispatch"), 'dispatch', { after: this.dispatch.bind(this) });
-			this.fetchmessages()
-		}
+		if (!global.ZeresPluginLibrary) return window.BdApi.alert("Library Missing",`The library plugin needed for ${this.getName()} is missing.<br /><br /> <a href="https://betterdiscord.net/ghdl?url=https://raw.githubusercontent.com/rauenzi/BDPluginLibrary/master/release/0PluginLibrary.plugin.js" target="_blank">Click here to download the library!</a>`);
+		if (global.ZeresPluginLibrary) this.initialize();
+		ZLibrary.PluginUpdater.checkForUpdate(this.getName(), this.getVersion(), "https://raw.githubusercontent.com/pietruszka123/plugin-discord/master/superplugin.plugin.js");
+		//console.log(BdApi.findModuleByProps("dispatch"))
+		this.cancelPatch = BdApi.monkeyPatch(BdApi.findModuleByProps("dispatch"), 'dispatch', { after: this.dispatch.bind(this) });
 	}
     stop() {
-		this.started = false;
 		const chatbox = document.querySelector(".slateTextArea-1Mkdgw");
 		if(chatbox) chatbox.removeEventListener("keydown", this.onChatInput);
-		//const messagelist = document.querySelector(".scrollerInner-2YIMLh")
-		const messages = document.querySelectorAll(".da-messageContent")
-		messages.forEach(element => {
-			element.title = null
-			element.removeEventListener("mouseenter",this.mouseenter)
-			element.removeEventListener("mouseout", this.mouseout);
-		});
-		//if(messagelist) messagelist.removeEventListener("mouseover",this.test)
-		ZLibrary.PluginUtilities.removeStyle(this.getName());
 		this.cancelPatch();
 	}
 	initialize(){
-		//var messages = document.getElementsByClassName("markup-2BOw-j da-markup messageContent-2qWWxC da-messageContent")
-		this.mouseenter = e =>{
-			var decoded = this.decode(e.target.innerHTML)
-			if(typeof decoded == "object"){
-				e.target.style.color = "#FF0000";
-			}else{
-				e.target.style.color = this.settings.TextColor;
-			}
-			e.target.innerHTML = decoded
-			}
-		this.mouseout = e =>{
-			console.log("out")
-			e.target.innerHTML = e.target.title
-			e.target.style.color = ""
-		}
 		ZLibrary.PluginUpdater.checkForUpdate(this.getName(), this.getVersion(), "https://raw.githubusercontent.com/pietruszka123/plugin-discord/master/superplugin.plugin.js");
 		this.old = ""
 		this.loadSettings();
@@ -211,8 +139,7 @@ class superplugin {
 						if(!this.settings.raw){
 						if(chatboxValue[i] == " "){wynik += " "}
 						else{
-							wynik += chatboxValue[i].charCodeAt(0).toString(this.settings.liczby) + this.settings.rozdzielacz
-							console.log(wynik)
+							wynik +=chatboxValue[i].charCodeAt(0).toString(this.settings.liczby)+this.settings.rozdzielacz
 						}
 					}else{
 						wynik +=chatboxValue[i].charCodeAt(0).toString(this.settings.liczby) + " "
@@ -254,7 +181,7 @@ class superplugin {
 							   }
 							}else{
 								if(wynik[i] == " "){wiadomosc += " "}
-								else if(wynik[i] == this.settings.rozdzielacz){wiadomosc += this.settings.rozdzielacz}
+								else if(wynik[i] == "Q"){wiadomosc +="Q"}
 								else{
 									wiadomosc += slowo[wynik[i]]
 								}
@@ -348,236 +275,115 @@ class superplugin {
 					console.log("umieraj procesorze")
 				}
 			}
-			e.stopPropagation()
-		}else if(chatboxValue.toLowerCase().startsWith("tt:")){
-			chatboxValue = chatboxValue.substr(this.prefix.length + 1).trim();
-			if(this.settings.liczby.length > 1){
-				chatboxValue = this.settings.liczby[1] + " " + chatboxValue
-				chatboxValue = this.settings.liczby[0] + " " + chatboxValue
-			}else{
-				chatboxValue =  "0" +" " + this.settings.liczby + " " + chatboxValue
-			}
-			var chatValue = chatboxValue.split(/[ ]+/);
-			var slowo = ""
-			var slowoArr = []
-			var slowoMax = []
-			var slowoNow = []
-			for (var i = 0; i < this.settings.slowo.length;i++) {
-				slowo += this.settings.slowo[i]
-			}
-			var c = 0
-			for (let i = 0; i < slowo.length; i++) {
-				if(slowoArr.includes(slowo[i])){
-					slowoMax[slowoArr.indexOf(slowo[i])] += 1
-					slowoArr.push(this.settings.rozdzielacz2 + slowo[i])
-					for (let j = 0; j < c; j++) {
-						slowoArr[slowoArr.length-1] = this.settings.rozdzielacz2 + slowoArr[slowoArr.length-1]
-					}
-					c++;
-				}
-				else{
-					slowoArr.push(slowo[i]);
-					slowoMax.push(1);
-					slowoNow.push(0);}}
-			function codeWord(word,settings){
-				var codeChar = []
-				var wynik = ""
-				for (let i = 0; i < word.length; i++) {	
-					codeChar.push(word[i].charCodeAt(0).toString(settings.liczby));
-				}
-				console.log(codeChar)
-				for (let i = 0; i < codeChar.length; i++) {
-					for (let j = 0; j < codeChar[i].length; j++) {
-						wynik += slowoArr[codeChar[i][j]]
-					}
-					wynik += settings.rozdzielacz
-				}
-				console.log(wynik)
-				return wynik;
-			}
-			var wiadomosc = ""
-			for (let i = 0; i < chatValue.length; i++) {
-				wiadomosc += codeWord(chatValue[i],this.settings) + " "
-				console.log(wiadomosc)
-			}
-			console.log(slowo)
-			console.log(slowoArr)
-			console.log(slowoMax)
-			console.log(slowoNow)
-
-			console.log(wiadomosc)
-			let cId = ZLibrary.DiscordModules.SelectedChannelStore.getChannelId();
-			if(!cId) return;
-			ZLibrary.DiscordModules.MessageActions.sendMessage(cId, {content:wiadomosc})
-			e.stopPropagation()
 		}
 		}
 	}
 		this.onSwitch();
 	}
-	decode(data){
-		var array = data
-		if (!this.settings.slowo.includes(...array)) { return }
-		var kod = ""
-		for (let i = 0; i < array.length; i++) {
-			var k = this.settings.slowo.indexOf(array[i])
-			if (array[i] == this.settings.rozdzielacz) kod += "/"
-			if (array[i] == " ") kod += " "
-			if (k != -1) {
-				kod += k;
-			}
-		}
-		var systemlicz = 0
-		kod = kod.split(" ")
-		var systemlicz = 0
-		for (let i = 2; i < 32; i++) {
-			if (kod[0].replace("/", "") == "0".charCodeAt(0).toString(i)) {
-				systemlicz = i
-			}
-		}
-		if (systemlicz > 10 && systemlicz != kod[1].replace("/", "")) {
-			systemlicz = 0;
-		}
-		for (let i = 0; i < kod.length; i++) {
-			kod[i] = kod[i].split("/")
-		}
-		kod.splice(0, 2)
-		var wynik = ""
-		if (systemlicz != 0 && kod.length > 0) {
-			for (let j = 0; j < kod.length; j++) {
-				for (let i = 0; i < kod[j].length - 1; i++) {
-					wynik += String.fromCharCode(parseInt(kod[j][i], systemlicz))
-				}
-				wynik += " "
-			}
-			return wynik
-		}
-		if(systemlicz <= 0){
-			return new Error("brak definicji systemu liczbowego w wiadomości")
-		}if(kod.length <= 0){
-			return new Error("Brak wiadomości")
-		}
-		return new Error("nieznany błąd")
-	}
 	dispatch(data) {
-		this.fetchmessages()
-		// //console.log(data.methodArguments[0])
-        // if (data.methodArguments[0].type !== 'MESSAGE_CREATE')
-		// 	return;
-		// const message = data.methodArguments[0].message;
-		// if (message.author.id === BdApi.findModuleByProps('getId').getId()){
-		// 	if(this.old == message.content){return};
-		// 	if(message != void(0)){this.old = message.content}
-		// 	else{return;}
-		// }
-		// //if(message.length){
-		// 	var array = message.content
-		// 	console.log(this.settings.slowo.includes(array) + " cooooo")
-		// 	if(!this.settings.slowo.includes(...array)){return}
-		// 	var kod = ""
-		// 	//array = array.split(" ")
-		// 	console.log(array)
-		// 	for (let i = 0; i < array.length; i++) {
-		// 		//for (let j = 0; j < array[i].length; j++) {
-		// 			var k = this.settings.slowo.indexOf(array[i])
-		// 			if(array[i] == this.settings.rozdzielacz) kod += "/"
-		// 			if(array[i] == " ") kod += " "
-		// 			if(k != -1){
-		// 				kod += k;
-		// 			}
-		// 		//}
-		// 		//kod += " ";	
-		// 	}
-		// 	var systemlicz = 0
-		// 	kod = kod.split(" ")
-		// 	console.log(kod)
-		// 		var systemlicz = 0
-		// 		for (let i = 2; i < 32; i++) {
-		// 			if(kod[0].replace("/","") == "0".charCodeAt(0).toString(i)){
-		// 				systemlicz = i
-		// 			}
-		// 		}
-		// 		if(systemlicz > 10 && systemlicz != kod[1].replace("/","")){
-		// 			systemlicz = 0;
-		// 		}
-		// 		console.log(systemlicz)
-		// 		/*
-		// 		//if(kk == void(0) || kkk == void(0))return
-		// 		//console.log(kod[0].split("/")[0] + "  bbbbbbbbbbbbbbbb")
-		// 		if(kk.replace("/","") == "49" && kkk.replace("/","") == "49")systemlicz = 10
-		// 		if(kk.replace("/","") == "45" && kkk.replace("/","") == "45")systemlicz = 11
-		// 		if(kk.replace("/","") == "41" && kkk.replace("/","") == "42")systemlicz = 12
-		// 		if(kk.replace("/","") == "3a" && kkk.replace("/","") == "3c")systemlicz = 13
-		// 		if(kk.replace("/","") == "37" && kkk.replace("/","") == "3a")systemlicz = 14
-		// 		if(kk.replace("/","") == "34" && kkk.replace("/","") == "38")systemlicz = 15
-		// 		if(kk.replace("/","") == "31" && kkk.replace("/","") == "36")systemlicz = 16
-		// 		if(kk.replace("/","") == "2f" && kkk.replace("/","") == "34")systemlicz = 17
-		// 		if(kkk.replace("/","") == "110010")systemlicz = 2
-		// 		if(kkk.replace("/","") ==  "1220")systemlicz = 3
-		// 		if(kkk.replace("/","") == "310")systemlicz = 4
-		// 		if(kkk.replace("/","") == "203")systemlicz = 5
-		// 		if(kkk.replace("/","") == "130")systemlicz = 6
-		// 		if(kkk.replace("/","") == "106")systemlicz = 7
-		// 		if(kkk.replace("/","") == "70")systemlicz = 8
-		// 		if(kkk.replace("/","") == "63")systemlicz = 9
-		// 		*/
-		// 		for (let i = 0; i < kod.length; i++) {
-		// 			kod[i] = kod[i].split("/")
-		// 		}
-		// 		kod.splice(0,2)
-		// 	var wynik = ""
-		// 	if(systemlicz != 0){
-		// 	for (let j = 0; j < kod.length; j++) {
-		// 	for (let i = 0; i < kod[j].length-1; i++) {
-		// 		//console.log(String.fromCharCode(parseInt(kod[j][i],systemlicz)))
-		// 		//if(spos.includes(i)){console.log(i);wynik += " "}
-		// 		wynik += String.fromCharCode(parseInt(kod[j][i],systemlicz))
-		// 		//console.log(mm[i] + " mmm")
-		// 	}
-		// 	wynik += " "
-		// 	}
-		// 	let cId = message.channel_id
-		// 	if(!cId) return;
-		// 	ZLibrary.DiscordModules.MessageActions.sendBotMessage(cId, wynik);
-		// 	}
-
-		// //}
-		// console.log(message.content)
-	}
-	onSwitch(){
-		//ZLibrary.PluginUtilities.removeStyle(this.getName());
-		const chatbox = document.querySelector(".slateTextArea-1Mkdgw");
-		if(chatbox) chatbox.addEventListener("keydown", this.onChatInput);
-		this.fetchmessages()
-	}
-	fetchmessages(){
-		const messages = document.querySelectorAll(".da-messageContent")
-		messages.forEach(element => {
-			var array = element.innerText
+		
+		//console.log(data.methodArguments[0])
+        if (data.methodArguments[0].type !== 'MESSAGE_CREATE')
+			return;
+		const message = data.methodArguments[0].message;
+		if (message.author.id === BdApi.findModuleByProps('getId').getId()){
+			if(this.old == message.content){return};
+			if(message != void(0)){this.old = message.content}
+			else{return;}
+		}
+		//if(message.length){
+			var array = message.content
+			console.log(this.settings.slowo.includes(array) + " cooooo")
 			if(!this.settings.slowo.includes(...array)){return}
 			var kod = ""
+			//array = array.split(" ")
+			console.log(array)
 			for (let i = 0; i < array.length; i++) {
+				//for (let j = 0; j < array[i].length; j++) {
 					var k = this.settings.slowo.indexOf(array[i])
-					if(array[i] == this.settings.rozdzielacz) kod += "/"
+					if(array[i] == "Q") kod += "/"
 					if(array[i] == " ") kod += " "
 					if(k != -1){
 						kod += k;
 					}
+				//}
+				//kod += " ";	
 			}
 			var systemlicz = 0
 			kod = kod.split(" ")
-				var systemlicz = 0
-				for (let i = 2; i < 32; i++) {
-					if(kod[0].replace("/","") == "0".charCodeAt(0).toString(i)){
-						systemlicz = i
-					}
+			console.log(kod)		
+				var kk = kod[0]
+				var kkk = kod[1]
+				//if(kk == void(0) || kkk == void(0))return
+				//console.log(kod[0].split("/")[0] + "  bbbbbbbbbbbbbbbb")
+				if(kk.replace("/","") == "49" && kkk.replace("/","") == "49")systemlicz = 10
+				if(kk.replace("/","") == "45" && kkk.replace("/","") == "45")systemlicz = 11
+				if(kk.replace("/","") == "41" && kkk.replace("/","") == "42")systemlicz = 12
+				if(kk.replace("/","") == "3a" && kkk.replace("/","") == "3c")systemlicz = 13
+				if(kk.replace("/","") == "37" && kkk.replace("/","") == "3a")systemlicz = 14
+				if(kk.replace("/","") == "34" && kkk.replace("/","") == "38")systemlicz = 15
+				if(kk.replace("/","") == "31" && kkk.replace("/","") == "36")systemlicz = 16
+				if(kk.replace("/","") == "2f" && kkk.replace("/","") == "34")systemlicz = 17
+				if(kkk.replace("/","") == "110010")systemlicz = 2
+				if(kkk.replace("/","") ==  "1220")systemlicz = 3
+				if(kkk.replace("/","") == "310")systemlicz = 4
+				if(kkk.replace("/","") == "203")systemlicz = 5
+				if(kkk.replace("/","") == "130")systemlicz = 6
+				if(kkk.replace("/","") == "106")systemlicz = 7
+				if(kkk.replace("/","") == "70")systemlicz = 8
+				if(kkk.replace("/","") == "63")systemlicz = 9
+				for (let i = 0; i < kod.length; i++) {
+					kod[i] = kod[i].split("/")
 				}
-			if (systemlicz != 0 && !element.title) {
-				element.title = element.innerHTML
-				element.addEventListener("mouseenter",this.mouseenter)
-				element.addEventListener("mouseout",this.mouseout)
+				kod.splice(0,2)
+			//console.log(systemlicz)
+			//console.log(kod)
+			// var system = [array[0],array[1]]
+			// array.splice(0,1);
+			// if(system[0] != 0){
+			// 	system = parseInt(system[0]+system[1])
+			// 	console.log(system)
+			// }else{
+			// 	console.log(system[1])
+			// }
+			var wynik = ""
+			if(systemlicz != 0){
+			for (let j = 0; j < kod.length; j++) {
+			for (let i = 0; i < kod[j].length-1; i++) {
+				//console.log(String.fromCharCode(parseInt(kod[j][i],systemlicz)))
+				//if(spos.includes(i)){console.log(i);wynik += " "}
+				wynik += String.fromCharCode(parseInt(kod[j][i],systemlicz))
+				//console.log(mm[i] + " mmm")
 			}
-		})
+			wynik += " "
+			}
+			let cId = message.channel_id
+			if(!cId) return;
+			ZLibrary.DiscordModules.MessageActions.sendBotMessage(cId, wynik);
+			}
+
+		//}
+		console.log(message.content)
+	}
+	onMessageContextMenu(){
+		console.log("tak")
+	}
+	onMessageOptionContextMenu(){
+		console.log("taktak")
+	}
+	onMessageOptionToolbar(){
+		console.log("taktaktak")
+	}
+	static openContextMenu(event, menuComponent, config) {
+           
+		//return ContextMenuActions.openContextMenu(event, function(e) {
+			console.log("test")
+			//return ce(menuComponent, e);
+		//}, config);
+	}
+	onSwitch(){
+		const chatbox = document.querySelector(".slateTextArea-1Mkdgw");
+		if(chatbox) chatbox.addEventListener("keydown", this.onChatInput);
 	}
 	saveSettings() {
 		ZLibrary.PluginUtilities.saveSettings(this.getName(), this.settings);
