@@ -5,7 +5,7 @@
 class superplugin {
     getName() {return "super plugin";}
     getDescription() {return "?";}
-    getVersion() {return "0.1.0";}
+    getVersion() {return "0.1.1";}
 	getAuthor() {return "pietruszka123";}
 	getSettingsPanel(){
 		function lerp (value1, value2, amount) {
@@ -106,10 +106,11 @@ class superplugin {
 		}
 	getChangelog(){
 		return [{title:"zmiany",items:[
-			"suwak zamiast textboxa do wprowadzania systemy liczbowego",
+			"nic"
+			/*"suwak zamiast textboxa do wprowadzania systemy liczbowego",
 			"obsługa powtórzeń znaków w `kodzie` częściowa bez tłumaczenia ",
 			"tłumaczenie po najechaniu na wiadomosc",
-			"komęda color: {kod koloru hex lub nazwa np. blue} {tekst}"
+			"komęda color: {kod koloru hex lub nazwa np. blue} {tekst}"*/
 
 
 
@@ -495,6 +496,8 @@ class superplugin {
 				}
 				wynik += " "
 			}
+		}
+		if(wynik != " "){
 			return wynik
 		}
 		if(systemlicz <= 0){
@@ -502,6 +505,8 @@ class superplugin {
 		}if(kod.length <= 0 && systemlicz <= 0){
 			return new Error("Brak danych" + data)
 		}if(kod.length <= 0 && systemlicz != 0){
+			return new Error("brak wiadomośći")
+		}if(wynik == " "){
 			return new Error("brak wiadomośći")
 		}
 		return new Error("nieznany błąd")
