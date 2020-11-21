@@ -5,7 +5,7 @@
 class superplugin {
     getName() {return "super plugin";}
     getDescription() {return "?";}
-    getVersion() {return "0.1.2";}
+    getVersion() {return "0.1.3";}
 	getAuthor() {return "pietruszka123";}
 	getSettingsPanel(){
 		function lerp (value1, value2, amount) {
@@ -103,10 +103,16 @@ class superplugin {
 		}
 		constructor(){
 			this.started = false;
+			this.colorcode = /*[" "," "," "," "," "," "]*/ ["0","1","2","3","4","5"]
+			this.colorcodeR = /*[" "," "," "," "," "," ","᲼"]*/["0","1","2","3","4","5","6"]
+			this.colorR = /*"᲼"*/"6"
+			this.colorTestR = "᲼"
+			this.colorTest = [" "," "," "," "," "," "," ","  "," "," ","​","‌","‍","‎","‏","‪","‬"]//17
+			this.colorTO = ["#","0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"]
 		}
 	getChangelog(){
 		return [{title:"zmiany",items:[
-			"nic"
+			"**nowa komenda** `c:` działa tak samo jak color: tylko kod koloru jest niewidzialny i składa się z 7 znaków obsługuje tylko kody Hex koloru"
 			/*"suwak zamiast textboxa do wprowadzania systemy liczbowego",
 			"obsługa powtórzeń znaków w `kodzie` częściowa bez tłumaczenia ",
 			"tłumaczenie po najechaniu na wiadomosc",
@@ -415,8 +421,8 @@ class superplugin {
 		}else if(chatboxValue.toLowerCase().startsWith("color:")){
 					chatboxValue = chatboxValue.substr("color:".length).trim();
 					//var str = "jhdnhjnhduhdnhdind    ⁪⁪   ⁪⁪   ⁪⁪   ⁪⁪   ⁪⁪   ⁪⁪ "
-					var znaki = ["0", "1", "2", "3", "4", "5"] //["⁪⁪ ","᲼"," "," "," "," "]
-					var rozdzielac = "6" //" ";
+					var znaki = this.colorcode //["⁪⁪ ","᲼"," "," "," "," "]
+					var rozdzielac = this.colorR //" ";
 					//const numericalChar = new Set(["⁪⁪ ","᲼"," "," "," "," "]);
 					//str = str.split("").filter(char => numericalChar.has(char)).join("");
 					//console.log(str + "str")
@@ -456,6 +462,27 @@ class superplugin {
 						ZLibrary.Toasts.show("brak wiadomości do wysłania",{type:"error"})
 					}
 					e.stopPropagation()
+		}else if(chatboxValue.toLowerCase().startsWith("c:")){
+			chatboxValue = chatboxValue.substr(this.prefix.length).trim();
+			chatboxValue = chatboxValue.split(" ")
+			console.log(chatboxValue[0] + " kolor")
+			var kolor = chatboxValue[0]
+			chatboxValue.shift()
+			var wynik = ""
+			for (let i = 0; i < kolor.length; i++) {
+				var char = this.colorTO.indexOf(kolor[i]);
+				if(char == -1)return;
+				wynik += this.colorTest[char];
+			}
+			var wiadomosc = ""
+			for (let i = 0; i < chatboxValue.length; i++) {
+				wiadomosc += chatboxValue[i] += " "
+			}
+			let cId = ZLibrary.DiscordModules.SelectedChannelStore.getChannelId();
+			if(!cId) return;
+			//ZLibrary.DiscordModules.MessageActions.sendMessage(cId, {content:"test" + this.colorTest + "t"})
+			ZLibrary.DiscordModules.MessageActions.sendMessage(cId, {content: wiadomosc + wynik + this.colorTestR})
+			e.stopPropagation()
 		}
 		}
 	}
@@ -512,9 +539,9 @@ class superplugin {
 		return new Error("nieznany błąd")
 	}
 	decodeColor(data){
-			var znaki = ["0","1","2","3","4","5"]//["⁪⁪ ","᲼"," "," "," "," "]
-			var rozdzielacz = "6"  //" "
-			const numericalChar = new Set(["0","1","2","3","4","5","6"])//["⁪⁪ ","᲼"," "," "," "," "," "]);
+			var znaki = this.colorcode//["⁪⁪ ","᲼"," "," "," "," "]
+			var rozdzielacz = this.colorR  //" "
+			const numericalChar = new Set(this.colorcodeR)//["⁪⁪ ","᲼"," "," "," "," "," "]);
 			data = data.split("").filter(char => numericalChar.has(char)).join("");
 			var array = data;
 			var kod = ""
@@ -527,7 +554,6 @@ class superplugin {
 			}
 		}
 		//console.log(kod)
-		var systemlicz = 0
 		kod = kod.split(" ")
 		var systemlicz = 6
 		for (let i = 0; i < kod.length; i++) {
@@ -548,6 +574,7 @@ class superplugin {
 		var kolory = ["white","blue","red","green","yellow","black","pink"]
 		const messages = document.querySelectorAll(".da-messageContent");
 		//this.decodeColor(messages[messages.length-1].innerText)
+		console.log("t")
 		messages.forEach(element => {
 			var data = element.innerText;
 			/*
@@ -556,23 +583,46 @@ class superplugin {
 				console.log((data.includes(t[i])) + "#" + t[i] + "#")
 				
 			}*/
-			const numericalChar = new Set(["0","1","2","3","4","5","6"])//["⁪⁪ ","᲼"," "," "," "," "," "]);
+			var numericalChar = new Set(this.colorTest)//this.colorcodeR)//["⁪⁪ ","᲼"," "," "," "," "," "]);
 			data = data.split("").filter(char => numericalChar.has(char)).join("");
+			if(data == ""){
+				data = element.innerText
+				numericalChar = new Set(this.colorcodeR)//this.colorcodeR)//["⁪⁪ ","᲼"," "," "," "," "," "]);
+				data = data.split("").filter(char => numericalChar.has(char)).join("");
+			}
 			if(data.length > 0){
-				if(/^#[0-9A-F]{6}$/i.test(this.decodeColor(element.innerText).wynik) || kolory.includes(this.decodeColor(element.innerText).wynik)){
+				if(/^#[0-9A-F]{6}$/i.test(this.decodeColor(element.innerText).wynik) || kolory.includes(this.decodeColor(element.innerText).wynik.toLowerCase()) || /^#[0-9A-F]{6}$/i.test(this.decodeC(element.innerText).wynik)){
 					//console.log("tek")
-					var color = this.decodeColor(element.innerText)
+					var color = this.decodeC(element.innerText)
+					if(color.wynik == ""){
+						color = this.decodeColor(element.innerText)
+					}
+
 					//console.log(this.decodeColor(element.innerText))
 					element.style.color = color.wynik//this.settings.TextColor//this.decodeColor(element.innerText)
-					element.innerText = element.innerText.replace(color.raw,"")
+					element.childNodes[0].nodeValue = element.childNodes[0].nodeValue.replace(color.raw,"")
 				}
 			}
 		})
 	}
+	decodeC(data){
+		const numericalChar = new Set(this.colorTest)
+		data = data.split("").filter(char => numericalChar.has(char)).join("");
+		var wynik = ""
+		for (let i = 0; i < data.length; i++) {
+			var char = this.colorTest.indexOf(data[i])
+			if(char == -1)return;
+			wynik += this.colorTO[char]
+		}
+		return {wynik:wynik,raw:data}
+	}
 	dispatch(data) {
-		if (data.methodArguments[0].type !== 'MESSAGE_CREATE')return;
-		this.fetchmessages();
-		this.updateColor();
+		if (data.methodArguments[0].type === 'MESSAGE_CREATE' || data.methodArguments[0].type === "LOAD_MESSAGES"){// || data.methodArguments[0].type === "UPDATE_CHANNEL_DIMENSIONS") {
+			var messages = document.querySelectorAll(".da-messageContent");
+			//console.log(messages[messages.length-1])
+			this.fetchmessages();
+			this.updateColor();
+		} else return;
 		// //console.log(data.methodArguments[0])
         //if (data.methodArguments[0].type !== 'MESSAGE_CREATE')
 		// 	return;
