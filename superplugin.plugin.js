@@ -5,7 +5,7 @@
 class superplugin {
     getName() {return "super plugin";}
     getDescription() {return "?";}
-    getVersion() {return "0.1.1";}
+    getVersion() {return "0.1.2";}
 	getAuthor() {return "pietruszka123";}
 	getSettingsPanel(){
 		function lerp (value1, value2, amount) {
@@ -545,6 +545,7 @@ class superplugin {
 		return "error"
 	}
 	updateColor(){
+		var kolory = ["white","blue","red","green","yellow","black","pink"]
 		const messages = document.querySelectorAll(".da-messageContent");
 		//this.decodeColor(messages[messages.length-1].innerText)
 		messages.forEach(element => {
@@ -558,13 +559,13 @@ class superplugin {
 			const numericalChar = new Set(["0","1","2","3","4","5","6"])//["⁪⁪ ","᲼"," "," "," "," "," "]);
 			data = data.split("").filter(char => numericalChar.has(char)).join("");
 			if(data.length > 0){
-				//if(this.decodeColor(element.innerText).includes("#")){
+				if(/^#[0-9A-F]{6}$/i.test(this.decodeColor(element.innerText).wynik) || kolory.includes(this.decodeColor(element.innerText).wynik)){
 					//console.log("tek")
 					var color = this.decodeColor(element.innerText)
 					//console.log(this.decodeColor(element.innerText))
 					element.style.color = color.wynik//this.settings.TextColor//this.decodeColor(element.innerText)
 					element.innerText = element.innerText.replace(color.raw,"")
-				//}
+				}
 			}
 		})
 	}
