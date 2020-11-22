@@ -5,7 +5,7 @@
 class superplugin {
     getName() {return "super plugin";}
     getDescription() {return "?";}
-    getVersion() {return "0.1.4";}
+    getVersion() {return "0.1.5";}
 	getAuthor() {return "pietruszka123";}
 	getSettingsPanel(){
 		function lerp (value1, value2, amount) {
@@ -197,7 +197,9 @@ class superplugin {
 			if(e.which == 13/*123*/ && !e.shiftKey && !e.ctrlKey && chatbox.innerText){
 				let chatboxValue = chatbox.innerText;
 				if(chatboxValue.toLowerCase().startsWith(this.prefix)){
+
 					chatboxValue = chatboxValue.substr(this.prefix.length).trim();
+					var chat = chatboxValue;
 					if(!this.settings.raw){
 					if(this.settings.liczby.length > 1){
 						chatboxValue = this.settings.liczby[1] + " " + chatboxValue
@@ -272,10 +274,15 @@ class superplugin {
 					}
 					console.log(wiadomosc.slice(wiadomosc.length-2,wiadomosc.length-1))
 					//window.BdApi.alert(wiadomosc)
-					let cId = ZLibrary.DiscordModules.SelectedChannelStore.getChannelId();
-					if(!cId) return;
-					//ZLibrary.DiscordModules.MessageActions.sendBotMessage(cId, chatboxValue);
-					ZLibrary.DiscordModules.MessageActions.sendMessage(cId, {content:wiadomosc})
+					console.log(chat)
+					if(chat != ""){
+						let cId = ZLibrary.DiscordModules.SelectedChannelStore.getChannelId();
+						if(!cId) return;
+						//ZLibrary.DiscordModules.MessageActions.sendBotMessage(cId, chatboxValue);
+						ZLibrary.DiscordModules.MessageActions.sendMessage(cId, {content:wiadomosc})
+					}else{
+						ZLibrary.Toasts.show("brak wiadomości do wysłania",{type:"error"})
+					}
 					//ZLibrary.DiscordModules.MessageActions.sendBotMessage(cId, "Please use a smaller field size.")
 			//}
 			e.stopPropagation()
@@ -574,11 +581,11 @@ class superplugin {
 		var kolory = ["white","blue","red","green","yellow","black","pink"]
 		const messages = document.querySelectorAll(".da-messageContent");
 		//this.decodeColor(messages[messages.length-1].innerText)
-		console.log("t")
+		//console.log("t")
 		messages.forEach(element => {
 			var data = element.innerText;
 			//if(data == null)
-			console.log(element.childNodes)
+			//console.log(element.childNodes)
 			/*
 			var t = ["⁪⁪ ","᲼"," "," "," "," "];
 			for (let i = 0; i < t.length; i++) {
