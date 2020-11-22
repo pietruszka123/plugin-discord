@@ -5,7 +5,7 @@
 class superplugin {
     getName() {return "super plugin";}
     getDescription() {return "?";}
-    getVersion() {return "0.1.5";}
+    getVersion() {return "0.1.6";}
 	getAuthor() {return "pietruszka123";}
 	getSettingsPanel(){
 		function lerp (value1, value2, amount) {
@@ -111,8 +111,10 @@ class superplugin {
 			this.colorTO = ["#","0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"]
 		}
 	getChangelog(){
-		return [{title:"zmiany",items:[
-			"**nowa komenda** `c:` działa tak samo jak color: tylko kod koloru jest niewidzialny i składa się z 7 znaków obsługuje tylko kody Hex koloru"
+		return [{title:"Bug fixes",type:"fixed",items:[
+			"naprawiono błędy",
+			"lista naprawionych błędów błędów: https://bit.ly/2IQO304"
+			//"**nowa komenda** `c:` działa tak samo jak color: tylko kod koloru jest niewidzialny i składa się z 7 znaków obsługuje tylko kody Hex koloru"
 			/*"suwak zamiast textboxa do wprowadzania systemy liczbowego",
 			"obsługa powtórzeń znaków w `kodzie` częściowa bez tłumaczenia ",
 			"tłumaczenie po najechaniu na wiadomosc",
@@ -165,6 +167,7 @@ class superplugin {
 		const messages = document.querySelectorAll(".da-messageContent")
 		messages.forEach(element => {
 			element.title = null
+			element.style.color = null
 			element.removeEventListener("mouseenter",this.mouseenter)
 			element.removeEventListener("mouseout", this.mouseout);
 		});
@@ -175,6 +178,7 @@ class superplugin {
 	initialize(){
 		//var messages = document.getElementsByClassName("markup-2BOw-j da-markup messageContent-2qWWxC da-messageContent")
 		this.mouseenter = e =>{
+			//console.log(this.decode(e.target.innerHTML))
 			var decoded = this.decode(e.target.innerHTML)
 			if(typeof decoded == "object"){
 				e.target.style.color = "#FF0000";
@@ -184,9 +188,11 @@ class superplugin {
 			e.target.innerHTML = decoded
 			}
 		this.mouseout = e =>{
-			console.log("out")
-			e.target.innerHTML = e.target.title
-			e.target.style.color = ""
+			//console.log("out")
+			setTimeout(function(){
+				e.target.innerHTML = e.target.title
+				e.target.style.color = ""
+			},200)
 		}
 		ZLibrary.PluginUpdater.checkForUpdate(this.getName(), this.getVersion(), "https://raw.githubusercontent.com/pietruszka123/plugin-discord/master/superplugin.plugin.js");
 		this.old = ""
@@ -531,8 +537,17 @@ class superplugin {
 				wynik += " "
 			}
 		}
-		if(wynik != " "){
+		var regex = new RegExp("/[ ]+/")
+		console.log(systemlicz)
+		if(wynik != " " && wynik != "" && systemlicz != 0 && systemlicz > this.settings.slowo.length){
+			return wynik + " wiadomosc może być źle przetłumaczona ze względu na to że lokalna długość słowa kodującego jest krótsza niż w wiadomości"
+		}
+		if(wynik != " " && wynik != "" && systemlicz != 0){
+			//console.log(wynik + " " + systemlicz + " " + kod)
 			return wynik
+		}
+		if(systemlicz > 0 && wynik == ""){
+			return new Error("brak wiadomosci")
 		}
 		if(systemlicz <= 0){
 			return new Error("brak definicji systemu liczbowego w wiadomości")
@@ -541,7 +556,7 @@ class superplugin {
 		}if(kod.length <= 0 && systemlicz != 0){
 			return new Error("brak wiadomośći")
 		}if(wynik == " "){
-			return new Error("brak wiadomośći")
+			return new Error("nie można odkodować")
 		}
 		return new Error("nieznany błąd")
 	}
@@ -630,7 +645,9 @@ class superplugin {
 		return {wynik:wynik,raw:data}
 	}
 	dispatch(data) {
-		if (data.methodArguments[0].type === 'MESSAGE_CREATE' || data.methodArguments[0].type === "LOAD_MESSAGES"){// || data.methodArguments[0].type === "UPDATE_CHANNEL_DIMENSIONS") {
+		//"EXPERIMENT_TRIGGER"
+		//"LOAD_MESSAGES_SUCCESS"
+		if (data.methodArguments[0].type === 'MESSAGE_CREATE' || data.methodArguments[0].type === "LOAD_MESSAGES" || data.methodArguments[0].type === "EXPERIMENT_TRIGGER"){// || data.methodArguments[0].type === "UPDATE_CHANNEL_DIMENSIONS") {
 			//var messages = document.querySelectorAll(".da-messageContent");
 			//console.log(messages[messages.length-1])
 			this.fetchmessages();
