@@ -5,7 +5,7 @@
 class superplugin {
     getName() {return "super plugin";}
     getDescription() {return "?";}
-    getVersion() {return "0.1.3";}
+    getVersion() {return "0.1.4";}
 	getAuthor() {return "pietruszka123";}
 	getSettingsPanel(){
 		function lerp (value1, value2, amount) {
@@ -577,6 +577,8 @@ class superplugin {
 		console.log("t")
 		messages.forEach(element => {
 			var data = element.innerText;
+			//if(data == null)
+			console.log(element.childNodes)
 			/*
 			var t = ["⁪⁪ ","᲼"," "," "," "," "];
 			for (let i = 0; i < t.length; i++) {
@@ -597,10 +599,14 @@ class superplugin {
 					if(color.wynik == ""){
 						color = this.decodeColor(element.innerText)
 					}
-
+					if(element.childNodes.length == 1){
 					//console.log(this.decodeColor(element.innerText))
 					element.style.color = color.wynik//this.settings.TextColor//this.decodeColor(element.innerText)
 					element.childNodes[0].nodeValue = element.childNodes[0].nodeValue.replace(color.raw,"")
+					}else{
+						element.style.color = color.wynik
+						if(element.childNodes[1].nodeValue == color.raw)element.childNodes[1].nodeValue = ""
+					}
 				}
 			}
 		})
@@ -618,7 +624,7 @@ class superplugin {
 	}
 	dispatch(data) {
 		if (data.methodArguments[0].type === 'MESSAGE_CREATE' || data.methodArguments[0].type === "LOAD_MESSAGES"){// || data.methodArguments[0].type === "UPDATE_CHANNEL_DIMENSIONS") {
-			var messages = document.querySelectorAll(".da-messageContent");
+			//var messages = document.querySelectorAll(".da-messageContent");
 			//console.log(messages[messages.length-1])
 			this.fetchmessages();
 			this.updateColor();
