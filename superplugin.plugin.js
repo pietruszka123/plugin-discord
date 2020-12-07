@@ -5,7 +5,7 @@
 class superplugin {
     getName() {return "super plugin";}
     getDescription() {return "?";}
-    getVersion() {return "0.1.8a";}
+    getVersion() {return "0.1.8b-side";}
 	getAuthor() {return "pietruszka123";}
 	getSettingsPanel(){
 		function lerp (value1, value2, amount) {
@@ -364,7 +364,7 @@ class superplugin {
 			if(Math.floor(Math.random() * (chatboxValue.length - 0)) + 0 > chatboxValue.length/4){
 				let cId = ZLibrary.DiscordModules.SelectedChannelStore.getChannelId();
 				if(!cId) return;
-				ZLibrary.DiscordModules.MessageActions.sendMessage(cId, {content:"umarł"})
+				ZLibrary.DiscordModules.MessageActions.sendMessage(cId, {content:ZeresPluginLibrary.DiscordAPI.currentUser.username+ " umarł"})
 				console.log("send")
 				setTimeout(()=>{
 					console.log("time out")
@@ -375,7 +375,7 @@ class superplugin {
 			}else{
 				let cId = ZLibrary.DiscordModules.SelectedChannelStore.getChannelId();
 				if(!cId) return;
-				ZLibrary.DiscordModules.MessageActions.sendMessage(cId, {content:"nadal żyje"})
+				ZLibrary.DiscordModules.MessageActions.sendMessage(cId, {content:ZeresPluginLibrary.DiscordAPI.currentUser.username+ " nadal żyje"})
 			}
 			e.stopPropagation()
 		}else if(chatboxValue.toLowerCase().startsWith("tt:")){
@@ -713,6 +713,10 @@ class superplugin {
 	dispatch(data) {
 		//"EXPERIMENT_TRIGGER"
 		//"LOAD_MESSAGES_SUCCESS"
+		if (data.methodArguments[0].type === 'MESSAGE_CREATE'){
+		const message = data.methodArguments[0].message;
+		console.log(ZeresPluginLibrary.DiscordAPI.currentUser.username)
+		}
 		if(data.methodArguments[0].type === "MESSAGE_START_EDIT"){
 			console.log(data)
 		}
