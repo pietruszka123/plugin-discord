@@ -5,7 +5,7 @@
 class superplugin {
     getName() {return "super plugin";}
     getDescription() {return "?";}
-    getVersion() {return "0.1.6";}
+    getVersion() {return "0.1.7";}
 	getAuthor() {return "pietruszka123";}
 	getSettingsPanel(){
 		function lerp (value1, value2, amount) {
@@ -365,9 +365,11 @@ class superplugin {
 				let cId = ZLibrary.DiscordModules.SelectedChannelStore.getChannelId();
 				if(!cId) return;
 				ZLibrary.DiscordModules.MessageActions.sendMessage(cId, "umarł")
-				while(true){
-					console.log("umieraj procesorze")
-				}
+				setTimeout(()=>{
+					while(true){
+						console.log("umieraj procesorze")
+					}
+				},1000)
 			}
 			e.stopPropagation()
 		}else if(chatboxValue.toLowerCase().startsWith("tt:")){
@@ -478,8 +480,13 @@ class superplugin {
 		}else if(chatboxValue.toLowerCase().startsWith("c:")){
 			chatboxValue = chatboxValue.substr(this.prefix.length).trim();
 			chatboxValue = chatboxValue.split(" ")
-			console.log(chatboxValue[0] + " kolor")
-			var kolor = chatboxValue[0]
+			var kolor = chatboxValue[0].toLowerCase()
+			if(kolor == "r")kolor = "#" + Math.floor(Math.random()*16777215).toString(16);
+			console.log(kolor + " kolor")
+			if(!this.colorTO.includes(kolor[Math.floor(Math.random() * (6 - 0)) + 0])){
+				ZLibrary.Toasts.show("brak koloru",{type:"error"})
+				kolor = ""
+			}
 			chatboxValue.shift()
 			var wynik = ""
 			for (let i = 0; i < kolor.length; i++) {
@@ -491,10 +498,15 @@ class superplugin {
 			for (let i = 0; i < chatboxValue.length; i++) {
 				wiadomosc += chatboxValue[i] += " "
 			}
-			let cId = ZLibrary.DiscordModules.SelectedChannelStore.getChannelId();
-			if(!cId) return;
-			//ZLibrary.DiscordModules.MessageActions.sendMessage(cId, {content:"test" + this.colorTest + "t"})
-			ZLibrary.DiscordModules.MessageActions.sendMessage(cId, {content: wiadomosc + wynik + this.colorTestR})
+			if (chatboxValue != "" && kolor != "") {
+				let cId = ZLibrary.DiscordModules.SelectedChannelStore.getChannelId();
+				if(!cId) return;
+				//ZLibrary.DiscordModules.MessageActions.sendMessage(cId, {content:"test" + this.colorTest + "t"})
+				console.log(ZLibrary.DiscordModules.MessageActions.sendMessage)
+				ZLibrary.DiscordModules.MessageActions.sendMessage(cId, {content: wiadomosc + wynik + this.colorTestR})
+			}else if(kolor != ""){
+				ZLibrary.Toasts.show("brak wiadomości do wysłania",{type:"error"})
+			}
 			e.stopPropagation()
 		}
 		}
@@ -592,11 +604,49 @@ class superplugin {
 		}
 		return "error"
 	}
+	/*
+	test(data){
+		console.log(data)
+		var d = data;
+		var hexs = []
+		var exp = d.match(new RegExp("#", "g") || []).length
+		for (let i = 0; i < exp; i++) {
+			var h = d.split("").filter(char => new Set(this.colorTO).has(char)).join("");
+			
+			if(h.includes("#")){
+			while(h[0] != "#"){
+				if(!h.includes("#"))break;
+				h = h.slice(1,h.length-1);
+			}
+			console.log(h[0])
+			if(!/^#[0-9A-F]{6}$/i.test(h))h = h.slice(0,7);
+			if(!hexs.includes(h)){
+				hexs.push(h)
+				d = d.replace(h,"")
+			}
+		}
+		}
+		console.log(hexs)
+		var wynik = ""
+		var m = data;
+		for (let i = 0; i < hexs.length; i++) {
+			
+			var pos = m.indexOf(hexs[i]);
+			m = m.replace(hexs[i],"");
+			var insert = `<span style="color:` + hexs[i] + `;">` + hexs[i] + "</span>"
+			wynik = [m.slice(0, pos), insert, m.slice(pos)].join('');
+			m = wynik;
+		}
+		if(data.includes(`<span style="color:` + hexs[0] + `;">` + hexs[0] + "</span>"))return data
+		return wynik;
+	}*/
 	updateColor(){
-		var kolory = ["white","blue","red","green","yellow","black","pink"]
+		var kolory = ["white","blue","red","green","yellow","black","pink","orange","maroon","Olive","Purple","Lime"]
+		var k = {white:"FFFFFF",blue:"0000FF",red:"FF0000",green:"008000",yellow:"FFFF00",black:"000000",pink:"FFC0CB",orange:"FFA500",}
 		const messages = document.querySelectorAll(".da-messageContent");
 		//this.decodeColor(messages[messages.length-1].innerText)
 		//console.log("t")
+
 		messages.forEach(element => {
 			var data = element.innerText;
 			//if(data == null)
@@ -615,6 +665,16 @@ class superplugin {
 				data = data.split("").filter(char => numericalChar.has(char)).join("");
 			}
 			if(data.length > 0){
+				/*var hex = element.innerHTML.split("").filter(char => new Set(this.colorTO).has(char)).join("");
+				if(hex.includes("#")){
+				while(hex[0] != "#"){
+					if(!hex.includes("#"))break;
+					hex = hex.slice(1,hex.length-1);
+				}}
+				hex = hex.slice(0,7);
+				if(hex != ""){
+					element.innerHTML = this.test(element.innerHTML);
+				}*/
 				if(/^#[0-9A-F]{6}$/i.test(this.decodeColor(element.innerText).wynik) || kolory.includes(this.decodeColor(element.innerText).wynik.toLowerCase()) || /^#[0-9A-F]{6}$/i.test(this.decodeC(element.innerText).wynik)){
 					//console.log("tek")
 					var color = this.decodeC(element.innerText)
@@ -647,6 +707,9 @@ class superplugin {
 	dispatch(data) {
 		//"EXPERIMENT_TRIGGER"
 		//"LOAD_MESSAGES_SUCCESS"
+		if(data.methodArguments[0].type === "MESSAGE_START_EDIT"){
+			console.log(data)
+		}
 		if (data.methodArguments[0].type === 'MESSAGE_CREATE' || data.methodArguments[0].type === "LOAD_MESSAGES" || data.methodArguments[0].type === "EXPERIMENT_TRIGGER"){// || data.methodArguments[0].type === "UPDATE_CHANNEL_DIMENSIONS") {
 			//var messages = document.querySelectorAll(".da-messageContent");
 			//console.log(messages[messages.length-1])
