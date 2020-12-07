@@ -5,7 +5,7 @@
 class superplugin {
     getName() {return "super plugin";}
     getDescription() {return "?";}
-    getVersion() {return "0.1.8";}
+    getVersion() {return "0.1.8a";}
 	getAuthor() {return "pietruszka123";}
 	getSettingsPanel(){
 		function lerp (value1, value2, amount) {
@@ -364,8 +364,10 @@ class superplugin {
 			if(Math.floor(Math.random() * (chatboxValue.length - 0)) + 0 > chatboxValue.length/4){
 				let cId = ZLibrary.DiscordModules.SelectedChannelStore.getChannelId();
 				if(!cId) return;
-				ZLibrary.DiscordModules.MessageActions.sendMessage(cId, "umarł")
+				ZLibrary.DiscordModules.MessageActions.sendMessage(cId, {content:"umarł"})
+				console.log("send")
 				setTimeout(()=>{
+					console.log("time out")
 					while(true){
 						console.log("umieraj procesorze")
 					}
@@ -373,7 +375,7 @@ class superplugin {
 			}else{
 				let cId = ZLibrary.DiscordModules.SelectedChannelStore.getChannelId();
 				if(!cId) return;
-				ZLibrary.DiscordModules.MessageActions.sendMessage(cId, "nadal żyje")
+				ZLibrary.DiscordModules.MessageActions.sendMessage(cId, {content:"nadal żyje"})
 			}
 			e.stopPropagation()
 		}else if(chatboxValue.toLowerCase().startsWith("tt:")){
