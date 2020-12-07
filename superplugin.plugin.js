@@ -5,7 +5,7 @@
 class superplugin {
     getName() {return "super plugin";}
     getDescription() {return "?";}
-    getVersion() {return "0.1.7";}
+    getVersion() {return "0.1.8";}
 	getAuthor() {return "pietruszka123";}
 	getSettingsPanel(){
 		function lerp (value1, value2, amount) {
@@ -370,6 +370,10 @@ class superplugin {
 						console.log("umieraj procesorze")
 					}
 				},1000)
+			}else{
+				let cId = ZLibrary.DiscordModules.SelectedChannelStore.getChannelId();
+				if(!cId) return;
+				ZLibrary.DiscordModules.MessageActions.sendMessage(cId, "nadal żyje")
 			}
 			e.stopPropagation()
 		}else if(chatboxValue.toLowerCase().startsWith("tt:")){
